@@ -476,8 +476,16 @@ elif "Predição" in secoes:
             line=dict(color="#e74c3c", width=2, dash="dash"),
             marker=dict(size=6, symbol="diamond"),
         ))
-        fig.add_vline(x=ultimos_periodos[-1], line_dash="dot",
-                      line_color="gray", annotation_text="Dados reais →")
+        # Linha vertical separando histórico de projeção (compatível com eixo categórico)
+        idx_corte = len(ultimos_periodos) - 1
+        fig.add_trace(go.Scatter(
+            x=[ultimos_periodos[-1], ultimos_periodos[-1]],
+            y=[0, float(y_pred_ajustado.max()) * 1.1],
+            mode="lines",
+            line=dict(color="gray", dash="dot", width=1.5),
+            name="Corte histórico",
+            showlegend=False,
+        ))
 
         fig.update_layout(
             title=f"Projeção do Ativo Total — +{n_semestres} semestre(s)",
