@@ -80,7 +80,6 @@ df = carregar_dados()
 
 # ─── Sidebar ────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Brasão_de_Armas_do_Brasil.svg/200px-Brasão_de_Armas_do_Brasil.svg.png", width=40)
     st.title("🏦 Banco Master")
     st.caption("Análise Financeira 2020–2024")
     st.divider()
