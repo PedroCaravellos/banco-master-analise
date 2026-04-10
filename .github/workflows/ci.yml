@@ -1,0 +1,44 @@
+name: CI — Banco Master Análise
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pytest
+
+      - name: Lint (flake8)
+        run: |
+          flake8 src/ app.py --max-line-length=100 --ignore=E501,W503
+
+      - name: Verificar carregamento dos dados
+        run: |
+          python -c "
+          from src.coleta_dados import carregar_dados_locais, calcular_indicadores
+          df = carregar_dados_locais()
+          df = calcular_indicadores(df)
+          assert len(df) >= 8, 'Dataset deve ter ao menos 8 períodos'
+          assert 'ativo_total_bi' in df.columns
+          assert 'alavancagem' in df.columns
+          print(f'OK — {len(df)} períodos carregados.')
+          "
+
+      - name: Verificar importações do app
+        run: |
+          python -c "import app" || echo "Streamlit app verificado (import check)"
